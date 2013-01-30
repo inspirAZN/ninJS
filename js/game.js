@@ -1,10 +1,3 @@
-/**
-<<<<<<< HEAD
- * Joseph test conflicttttttt
-=======
- * Authors: Joseph Caluza, Brian Chung SHUT THE FRONT DOOR!
->>>>>>> some comments
- */
 window.onload = function() {
 	// init 600 x 700 area, black
 	Crafty.init(600,700);

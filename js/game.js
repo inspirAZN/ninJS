@@ -1,5 +1,5 @@
 /**
- * Authors: Joseph Caluza, Brian Chung
+ * Joseph test conflicttttttt
  */
 window.onload = function() {
 	// init 600 x 700 area, black

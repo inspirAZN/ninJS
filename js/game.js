@@ -3,8 +3,7 @@
  */
 window.onload = function() {
 	// init 600 x 700 area, black
-	Crafty.init(600,700);
-	//Crafty.background("black");
+	var bg = Crafty.init(600,700);
 	
 	// load dat sprite
 	Crafty.sprite( 28 ,"/Users/josephcaluza/Desktop/newgame/images/FemaleNinjaSprite.png", {
@@ -12,9 +11,11 @@ window.onload = function() {
 	});
 	
 	// some grass
-	Crafty.sprite(32, "/Users/josephcaluza/Desktop/newgame/images/grass.png", {
-		grass: [1,1],
+	Crafty.sprite(70, "/Users/josephcaluza/Desktop/newgame/images/grass.png", {
+		grass: [6,6]
 	});
+
+	var grass = Crafty.e("2D, DOM, grass, sprite")
 
 	// our hero
 	var ninja = Crafty.e("2D, DOM, ninja, controls, Multiway").multiway(3, {UP_ARROW: -90, DOWN_ARROW: 90});

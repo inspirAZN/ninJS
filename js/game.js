@@ -1,3 +1,6 @@
+/**
+ *  ninJS.
+ */
 window.onload = function() {
 	// init 600 x 700 area, black
 	Crafty.init(600,700);

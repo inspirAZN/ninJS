@@ -20,14 +20,9 @@ window.onload = function() {
 		grass: [0,0]
 	});
 
-
-	// Add grass
-  var grass_X = 0;
-  var grass_Y = 0;
-  for( var i = 0; i < 700; i += 60 ) {
-    grass_Y = i;
-    for( var j = 0; j < 800; j +=80 ) {
-      grass_X = j;
+  // Add grass
+  for( var grass_Y = 0; grass_Y < 700; grass_Y += 60 ) {
+    for( var grass_X = 0; grass_X < 800; grass_X += 80 ) {
       Crafty.e("2D, DOM, grass, sprite")
       .attr( {x: grass_X, y: grass_Y} );
     }

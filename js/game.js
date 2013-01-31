@@ -2,8 +2,11 @@
  *  ninJS.
  */
 window.onload = function() {
+
+  var win_w = 1400;
+  var win_h = 700;
 	// init 1400 x 700 area, black
-	var bg = Crafty.init(1400,700);
+	var bg = Crafty.init(win_w, win_h);
 	
 	// load the sprites
 	Crafty.sprite( 32 ,"images/FemaleNinjaSprite.png", {
@@ -15,18 +18,26 @@ window.onload = function() {
 		maleNinja: [0,0,0,1.5],
 	});
 	
+  var grass_w = 639;
 	// some grass
-	Crafty.sprite(639, "images/grass.png", {
-		grass: [0,0]
+	Crafty.sprite( grass_w/4 , "images/grass.png", {
+		grass1: [0,0],
+    grass2: [0,1],
+    grass3: [0,2],
+    grass4: [1,0]
 	});
 
-  // Add grass
-  for( var grass_Y = 0; grass_Y < 700; grass_Y += 60 ) {
-    for( var grass_X = 0; grass_X < 800; grass_X += 80 ) {
-      Crafty.e("2D, DOM, grass, sprite")
+  Crafty.e("2D, DOM, grass2, sprite");
+
+
+  // random grass ( -1 is for rounding error.. line separation when no -1 )
+  for( var grass_Y = 0; grass_Y < win_h; grass_Y += (grass_w/4) - 1) {
+    for( var grass_X = 0; grass_X < win_w; grass_X += (grass_w/4) - 1) {
+      Crafty.e("2D, DOM, grass" + Crafty.math.randomInt(1,4) + ", sprite")
       .attr( {x: grass_X, y: grass_Y} );
     }
   }
+  
 
 
   	//trial animation (forward)

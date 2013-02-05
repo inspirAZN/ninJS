@@ -8,6 +8,106 @@ window.onload = function() {
 	// init 1400 x 700 area, black
 	var bg = Crafty.init(win_w, win_h);
 	
+  /* 
+   * Component definitions 
+   */
+
+  //setting up animation for movement of femaleNinja
+  Crafty.c('NinjaGirl', {
+      NinjaGirl: function() {
+                //setup animations
+                this.requires("SpriteAnimation")
+                .animate("walk_up", 0,4.5,3)
+                .animate("walk_down", 0,0,3)
+                .animate("face_left", 0, 1.5, 0)
+                //change direction when a direction change event is received
+                .bind("NewDirection",
+                    function (direction) {
+                        if (direction.y < 0) {
+                            if (!this.isPlaying("walk_up"))
+                                this.stop().animate("walk_up", 15, -1);
+                        }
+                        if (direction.y > 0) {
+                            if (!this.isPlaying("walk_down"))
+                                this.stop().animate("walk_down", 15, -1);
+                        }
+                        if(direction.x === 0 && direction.y === 0) {
+                            this.stop().animate("face_left", 15, 0);
+                        }
+                });
+            return this;
+        }
+    });
+    
+    var stop = false;
+   //setting up animation for movement of maleNinja
+    Crafty.c('NinjaBoy', {
+        NinjaBoy: function() {
+                //setup animations
+                this.requires("SpriteAnimation")
+                .requires("Collision")
+                .animate("walk_up", 0,4.5,3)
+                .animate("walk_down", 0,0,3)
+                .animate("face_left", 0, 3, 0)
+                //change direction when a direction change event is received
+                .bind("NewDirection",
+                    function (direction) {
+                        if (direction.y < 0) {
+                            if (!this.isPlaying("walk_up")) 
+                                this.stop().animate("walk_up", 15, -1);
+                        }
+                        if (direction.y > 0) {
+                            if (!this.isPlaying("walk_down"))
+                                this.stop().animate("walk_down", 15, -1);
+                        }
+                        if(!direction.x && !direction.y) {
+                            this.stop().animate("face_left", 15, 0);
+                        }
+                });
+            return this;
+        }
+    });
+
+    //create the shuriken component
+  Crafty.c("ninjaStar", {
+    ninjaStar: function() {
+        //animations
+        this.requires("SpriteAnimation")
+                .animate("shoot", 0, 0, 3)
+
+        this.bind("enterframe", function() {
+            this.move(dir, 15);
+            if(this.x > Crafty.viewport.width || this.x < 0) 
+                this.destroy();
+        });
+        return this;
+    }
+});
+     
+    Crafty.c("RightControls", {
+        init: function() {
+            this.requires('Multiway');
+        },
+         
+        rightControls: function(speed) {
+            this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: -90, LEFT_ARROW: 90})
+            return this;
+        }
+         
+    });
+     
+    Crafty.c("LeftControls", {
+        init: function() {
+            this.requires('Multiway');
+        },
+         
+        leftControls: function(speed) {
+            this.multiway(speed, {W: -90, S: 90, A: -90, D: 90})
+            return this;
+        }
+         
+    });
+
 	// load the sprites
 	Crafty.sprite( 32 ,"images/FemaleNinjaSprite.png", {
 		femaleNinja: [0,0,0,1.5],
@@ -32,7 +132,7 @@ window.onload = function() {
     grass4: [1,0]
 	});
 
-  Crafty.e("2D, DOM, grass2, sprite");
+  //Crafty.e("2D, DOM, grass2, sprite");
 
 
   // random grass ( -1 is for rounding error.. line separation when no -1 )
@@ -42,88 +142,12 @@ window.onload = function() {
       .attr( {x: grass_X, y: grass_Y} );
     }
   }
-  
-//setting up animation for movement of femaleNinja
-    Crafty.c('NinjaGirl', {
-        NinjaGirl: function() {
-                //setup animations
-                this.requires("SpriteAnimation")
-                .animate("walk_up", 0,4.5,3)
-                .animate("walk_down", 0,0,3)
-                .animate("face_left", 0, 1.5, 0)
-                //change direction when a direction change event is received
-                .bind("NewDirection",
-                    function (direction) {
-                        if (direction.y < 0) {
-                            if (!this.isPlaying("walk_up"))
-                                this.stop().animate("walk_up", 15, -1);
-                        }
-                        if (direction.y > 0) {
-                            if (!this.isPlaying("walk_down"))
-                                this.stop().animate("walk_down", 15, -1);
-                        }
-                        if(!direction.x && !direction.y) {
-                            this.stop().animate("face_left", 15, 0);
-                        }
-                })
-            return this;
-        }
-    });
-     
-    Crafty.c("RightControls", {
-        init: function() {
-            this.requires('Multiway');
-        },
-         
-        rightControls: function(speed) {
-            this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: -90, LEFT_ARROW: 90})
-            return this;
-        }
-         
-    });
 
-//setting up animation for movement of maleNinja
-
-Crafty.c('NinjaBoy', {
-        NinjaBoy: function() {
-                //setup animations
-                this.requires("SpriteAnimation")
-                .animate("walk_up", 0,4.5,3)
-                .animate("walk_down", 0,0,3)
-                .animate("face_left", 0, 3, 0)
-                //change direction when a direction change event is received
-                .bind("NewDirection",
-                    function (direction) {
-                        if (direction.y < 0) {
-                            if (!this.isPlaying("walk_up"))
-                                this.stop().animate("walk_up", 15, -1);
-                        }
-                        if (direction.y > 0) {
-                            if (!this.isPlaying("walk_down"))
-                                this.stop().animate("walk_down", 15, -1);
-                        }
-                        if(!direction.x && !direction.y) {
-                            this.stop().animate("face_left", 15, 0);
-                        }
-                })
-            return this;
-        }
-    });
-     
-    Crafty.c("LeftControls", {
-        init: function() {
-            this.requires('Multiway');
-        },
-         
-        leftControls: function(speed) {
-            this.multiway(speed, {W: -90, S: 90, A: -90, D: 90})
-            return this;
-        }
-         
-    });
+    /*
+     * Trial Animation BEGIN ******
+     */
 
   	//trial animation (forward)
-
   	Crafty.e("2D, DOM, SpriteAnimation, femaleNinja")
     	.animate('PlayerRunning', 0, 0, 1.5) //setup animation
     	.animate('PlayerRunning', 0, 0, 1.75)
@@ -162,17 +186,9 @@ Crafty.c('NinjaBoy', {
     	.animate('PlayerRunning4', 40, -1) // start animation
     	.attr({x: 420, y:300});
 
-
-	// female ninja
-	var femaleNinja = Crafty.e("2D, DOM, NinjaGirl, player, femaleNinja, RightControls")
-        .attr({ x: 1000, y: 250, z: 0 })
-                .rightControls(2)
-                .NinjaGirl();
-
-
     //male ninja trial animations
 
-//trial animation (forward)
+    //trial animation (forward)
 
     Crafty.e("2D, DOM, SpriteAnimation, maleNinja")
         .animate('PlayerRunning', 0, 0, 1.5) //setup animation
@@ -194,6 +210,7 @@ Crafty.c('NinjaBoy', {
 
     //trial animation (left)
 
+    //shuriken trial animations
     Crafty.e("2D, DOM, SpriteAnimation, shuriken")
         .animate('shurikenFire', 0, 0, 1) //setup animation
         .animate('shurikenFire', 0, 1, 2)
@@ -201,22 +218,14 @@ Crafty.c('NinjaBoy', {
         .animate('shurikenFire', 40, -1) // start animation
         .attr({x: 600, y:300});
 
-  //trial animation (fire to the left)
+    //trial animation (fire to the left)
      Crafty.e("2D, DOM, SpriteAnimation, shuriken")
         .animate('shurikenFire2', 0, 2, 2)//setup animation
         .animate('shurikenFire2', 0, 0, 1)
         .animate('shurikenFire2', 5, -1) // start animation
         .attr({x: 640, y:300});
-
-	// male ninja
-	var maleNinja = Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls")
-		.attr({ x: 200, y: 250, z: 0 })
-        .leftControls(2)
-        .NinjaBoy();
-
-         //shuriken trial animations
-
-//trial animation (fire to the right)
+    
+    //trial animation (fire to the right)
 
     Crafty.e("2D, DOM, SpriteAnimation, maleNinja")
         .animate('PlayerRunning', 0, 0, 1.5) //setup animation
@@ -226,24 +235,33 @@ Crafty.c('NinjaBoy', {
         .animate('PlayerRunning', 40, -1) // start animation
         .attr({x: 460, y:300});
 
+    /*
+     * Trial Animation END ******
+     */
+
+  /*
+   * Main Entity Initialization
+   */
+
+	// female ninja
+	var femaleNinja = 
+  Crafty.e("2D, DOM, NinjaGirl, player, femaleNinja, RightControls, Collision")
+        .attr({ x: 1000, y: 250, z: 0 })
+                .rightControls(2)
+                .NinjaGirl();
+
+	// male ninja
+	var maleNinja = 
+  Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls, Collision")
+		.attr({ x: 200, y: 250, z: 0 })
+        .leftControls(2)
+        .NinjaBoy();
     
     //shuriken
     var shuriken = Crafty.e("2D, DOM, shuriken");
 
-    //create the shuriken component
-Crafty.c("ninjaStar", {
-    ninjaStar: function() {
-        //animations
-        this.requires("SpriteAnimation")
-                .animate("shoot", 0, 0, 3)
-
-        this.bind("enterframe", function() {
-            this.move(dir, 15);
-            if(this.x > Crafty.viewport.width || this.x < 0) 
-                this.destroy();
-        });
-        return this;
-    }
-});
+  var borderTop =
+  Crafty.e("2D, DOM, Collision, borderTop")
+    .attr( {x: 0, y: 5, z: 0, w: win_w, h: 1});
 
 };

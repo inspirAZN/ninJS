@@ -12,6 +12,7 @@ window.onload = function() {
    * Component definitions 
    */
 
+
   //setting up animation for movement of femaleNinja
   Crafty.c('NinjaGirl', {
       NinjaGirl: function() {
@@ -133,6 +134,52 @@ window.onload = function() {
     grass3: [0,2],
     grass4: [1,0]
 	});
+
+    //shuriken things
+    var shuriken = Crafty.e("2D, DOM, shuriken");
+
+    //firing the shuriken
+    Crafty.c('NinjaStar', {
+        NinjaStar: function() {
+                //setup animations
+                this.requires("SpriteAnimation")
+                .animate("fire", 0,2,3)
+                .bind("Fire",
+                    function (shurikenFire) {
+                        if (shurikenFire.x>0) {
+                            if (!this.isPlaying("fire"))
+                                this.stop().animate("fire", 15, -1);
+                        }
+                })
+
+            return this;
+        }
+    });
+
+    Crafty.c("FireControls", {
+        init: function() {
+            this.requires('Multiway');
+        },
+         
+        fireControls: function(speed) {
+            this.multiway(speed, {SPACE: 0})
+            return this;
+        }
+         
+    });
+
+    Crafty.c("bullet", {
+    bullet: function(dir) {
+        this.bind("enterframe", function() {
+            this.move(dir, 15);
+            if(this.x > Crafty.viewport.width || this.x < 0) 
+                this.destroy();
+        });
+        return this;
+    }
+});
+     
+  	//trial animation (forward)
 
   //Crafty.e("2D, DOM, grass2, sprite");
 
@@ -260,10 +307,14 @@ window.onload = function() {
         .NinjaBoy();
     
     //shuriken
-    var shuriken = Crafty.e("2D, DOM, shuriken");
+    var shuriken = Crafty.e("2D, DOM, shuriken, NinjaStar, FireControls")
+        .attr({x: maleNinja.x, y: maleNinja.y})
+        .fireControls(15)
+        .NinjaStar;
 
   var borderTop =
   Crafty.e("2D, DOM, Collision, borderTop")
     .attr( {x: 0, y: 5, z: 0, w: win_w, h: 1});
+
 
 };

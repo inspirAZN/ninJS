@@ -155,14 +155,23 @@ window.onload = function() {
             return this;
         }
     });
-
+    var shoot = false;
     Crafty.c("FireControls", {
         init: function() {
             this.requires('Multiway');
         },
          
         fireControls: function(speed) {
-            this.multiway(speed, {SPACE: 0})
+            //this.multiway(speed, {SPACE: 0})
+            this.bind("KeyDown", function(e) {
+              if( e.keydown === Crafty.keys['SPACE'] ) {
+                shoot = true;
+                alert("ITS TRUE");
+              }
+            }).bind("EnterFrame", function() {
+              if( shoot )
+                this.x += speed;
+            });
             return this;
         }
          
@@ -178,7 +187,27 @@ window.onload = function() {
         return this;
     }
 });
-     
+
+    Crafty.c('ShurikenShoot', {
+      ShurikenShoot: function() {
+            Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
+        .attr({x: maleNinja.x + 30, y: maleNinja.y})
+        //.fireControls(5)
+        .NinjaStar()
+        .bind("KeyDown", function(e) {
+              if( e.key === Crafty.keys['SPACE'] ) {
+                shoot = true;
+                //alert("ITS TRUE");
+              }
+        }).bind("EnterFrame", function() {
+              if( shoot )
+                this.x += 10;
+        }).onHit("femaleNinja", function() {
+          this.destroy();
+        });
+      }
+    });
+    
   	//trial animation (forward)
 
   //Crafty.e("2D, DOM, grass2, sprite");
@@ -292,6 +321,9 @@ window.onload = function() {
    * Main Entity Initialization
    */
 
+   var __shuriSpd = 0;
+   var male_ninja_score = 0;
+   var female_ninja_score = 0;
 	// female ninja
 	var femaleNinja = 
   Crafty.e("2D, DOM, NinjaGirl, player, femaleNinja, RightControls, Collision")
@@ -301,20 +333,64 @@ window.onload = function() {
 
 	// male ninja
 	var maleNinja = 
-  Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls, Collision")
+  Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls, Collision, ShurikenShoot")
 		.attr({ x: 200, y: 250, z: 0 })
         .leftControls(2)
-        .NinjaBoy();
+        .NinjaBoy()
+        .bind("keydown", function(e) {
+          if( e.key === Crafty.keys.X ) {
+             //this.ShurikenShoot();   
+                //shuriken
+            /*Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
+            .attr({x: maleNinja.x + 30, y: maleNinja.y})
+            //.fireControls(5)
+            .NinjaStar()
+            .bind("KeyDown", function(e) {
+                  if( e.key === Crafty.keys['SPACE'] ) {
+                    shoot = true;
+                    //alert("ITS TRUE");
+                  }
+            }).bind("EnterFrame", function() {
+                  if( shoot )
+                    this.x += 10;
+            }).onHit("femaleNinja", function() {
+              this.destroy();
+            });
+            /*Crafty.e("2D, Collision, DOM, shuriken, NinjaStar, FireControls")
+            .attr( {x: maleNinja.x, y: maleNinja.y, __shuriSpd: 10 } ) 
+            .NinjaStar()
+            .fireControls(15)
+            .bind("EnterFrame", function() {
+              this.x += __shuriSpd;
+            })
+            .onHit("femaleNinja", function() {
+              male_ninja_score++; this.destroy(); 
+            });*/
+          }
+    });
+
     
     //shuriken
-    var shuriken = Crafty.e("2D, DOM, shuriken, NinjaStar, FireControls")
-        .attr({x: maleNinja.x, y: maleNinja.y})
-        .fireControls(15)
-        .NinjaStar;
+    Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
+        .attr({x: maleNinja.x + 30, y: maleNinja.y})
+        //.fireControls(5)
+        .NinjaStar()
+        .bind("KeyDown", function(e) {
+              if( e.key === Crafty.keys['SPACE'] ) {
+                shoot = true;
+                //alert("ITS TRUE");
+              }
+        }).bind("EnterFrame", function() {
+              if( shoot )
+                this.x += 10;
+        }).onHit("femaleNinja", function() {
+          this.destroy();
+        });
 
+/*
   var borderTop =
   Crafty.e("2D, DOM, Collision, borderTop")
     .attr( {x: 0, y: 5, z: 0, w: win_w, h: 1});
 
-
+*/
 };

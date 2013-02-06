@@ -19,6 +19,7 @@ window.onload = function() {
                 this.requires("SpriteAnimation")
                 .animate("walk_up", 0,4.5,3)
                 .animate("walk_down", 0,0,3)
+                //when animation stops, player faces left
                 .animate("face_left", 0, 1.5, 0)
                 //change direction when a direction change event is received
                 .bind("NewDirection",
@@ -48,7 +49,8 @@ window.onload = function() {
                 .requires("Collision")
                 .animate("walk_up", 0,4.5,3)
                 .animate("walk_down", 0,0,3)
-                .animate("face_left", 0, 3, 0)
+                //when animation finishes, player faces right
+                .animate("face_right", 0, 3, 0)
                 //change direction when a direction change event is received
                 .bind("NewDirection",
                     function (direction) {
@@ -61,7 +63,7 @@ window.onload = function() {
                                 this.stop().animate("walk_down", 15, -1);
                         }
                         if(!direction.x && !direction.y) {
-                            this.stop().animate("face_left", 15, 0);
+                            this.stop().animate("face_right", 15, 0);
                         }
                 });
             return this;

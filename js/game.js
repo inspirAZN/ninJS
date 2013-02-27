@@ -195,7 +195,7 @@ window.onload = function() {
         //.fireControls(5)
         .NinjaStar()
         .bind("KeyDown", function(e) {
-              if( e.key === Crafty.keys['SPACE'] ) {
+              if( e.key === Crafty.keys["SPACE"] ) {
                 shoot = true;
                 //alert("ITS TRUE");
               }

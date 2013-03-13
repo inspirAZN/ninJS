@@ -178,7 +178,7 @@ window.onload = function() {
         }
          
     });
-
+/*
     Crafty.c("bullet", {
     bullet: function(dir) {
         this.bind("enterframe", function() {
@@ -189,6 +189,7 @@ window.onload = function() {
         return this;
     }
 });
+
 
     Crafty.c('ShurikenShoot', {
       ShurikenShoot: function() {
@@ -209,9 +210,7 @@ window.onload = function() {
         });
       }
     });
-
-    // creating unlimited shuriken
-
+*/
 
 
   	//trial animation (forward)
@@ -250,50 +249,33 @@ window.onload = function() {
         .leftControls(2)
         .NinjaBoy()
         .bind("KeyDown", function(e) {
+            //if space is pressed, fire shuriken
           if( e.key === Crafty.keys["SPACE"] ) {
-             //this.ShurikenShoot();   
-                //shuriken
-                var bulletX = this.x + 10;
-                var bulletY = this.y;
-
-                Crafty.e("2D, DOM, ShurikenShoot, Collision")
-                    .attr({
-                        x:bulletX,
-                        y:bulletY,
-                        speed:10
-                    }
-
-                        )
+            shoot = true;
+              
             Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
-            .attr({x: maleNinja.x + 30, y: maleNinja.y})
-            //.fireControls(5)
-            .NinjaStar()
-            .bind("KeyDown", function(e) {
-                  if( e.key === Crafty.keys['SPACE'] ) {
-                    shoot = true;
-                    //alert("ITS TRUE");
-                  }
-            }).bind("EnterFrame", function() {
-                  if( shoot )
-                    this.x += 10;
-            }).onHit("femaleNinja", function() {
-              this.destroy();
-            });
-            Crafty.e("2D, Collision, DOM, shuriken, NinjaStar, FireControls")
-            .attr( {x: maleNinja.x, y: maleNinja.y, __shuriSpd: 10 } ) 
-            .NinjaStar()
-            .fireControls(15)
-            .bind("EnterFrame", function() {
-              this.x += __shuriSpd;
-            })
-            .onHit("femaleNinja", function() {
-              male_ninja_score++; this.destroy(); 
-            });
+            //this is important
+                .attr({x: maleNinja.x + 30, y: maleNinja.y + 15})
+                .NinjaStar()
+                /*
+                .bind("KeyDown", function(e) {
+                      if( e.key === Crafty.keys['SPACE'] ) {
+                        //shoot = true;
+                        //alert("ITS TRUE");
+                      } 
+                })*/
+                .bind("EnterFrame", function() {
+                      if( shoot )
+                        this.x += 10;
+                }).onHit("femaleNinja", function() {
+                  this.destroy();
+                });
           }
     });
 
     
     //shuriken
+    /*
     Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
         .attr({x: maleNinja.x + 30, y: maleNinja.y})
         //.fireControls(5)
@@ -308,7 +290,7 @@ window.onload = function() {
                 this.x += 10;
         }).onHit("femaleNinja", function() {
           this.destroy();
-        });
+        }); */
 
 
   var borderTop =

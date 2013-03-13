@@ -158,65 +158,6 @@ window.onload = function() {
         }
     });
     var shoot = false;
-    Crafty.c("FireControls", {
-        init: function() {
-            this.requires('Multiway');
-        },
-         
-        fireControls: function(speed) {
-            //this.multiway(speed, {SPACE: 0})
-            this.bind("KeyDown", function(e) {
-              if( e.keydown === Crafty.keys['SPACE'] ) {
-                shoot = true;
-                alert("ITS TRUE");
-              }
-            }).bind("EnterFrame", function() {
-              if( shoot )
-                this.x += speed;
-            });
-            return this;
-        }
-         
-    });
-/*
-    Crafty.c("bullet", {
-    bullet: function(dir) {
-        this.bind("enterframe", function() {
-            this.move(dir, 15);
-            if(this.x > Crafty.viewport.width || this.x < 0) 
-                this.destroy();
-        });
-        return this;
-    }
-});
-
-
-    Crafty.c('ShurikenShoot', {
-      ShurikenShoot: function() {
-            Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
-            .attr({x: maleNinja.x + 30, y: maleNinja.y})
-        
-            .NinjaStar()
-            .bind("KeyDown", function(e) {
-              if( e.key === Crafty.keys["SPACE"] ) {
-                shoot = true;
-                //alert("ITS TRUE");
-              }
-        }).bind("EnterFrame", function() {
-              if( shoot )
-                this.x += 10;
-        }).onHit("femaleNinja", function() {
-          this.destroy();
-        });
-      }
-    });
-*/
-
-
-  	//trial animation (forward)
-
-  //Crafty.e("2D, DOM, grass2, sprite");
-
 
   // random grass ( -1 is for rounding error.. line separation when no -1 )
   for( var grass_Y = 0; grass_Y < win_h; grass_Y += (grass_w/4) - 1) {
@@ -235,12 +176,34 @@ window.onload = function() {
    var __shuriSpd = 0;
    var male_ninja_score = 0;
    var female_ninja_score = 0;
+
 	// female ninja
 	var femaleNinja = 
-  Crafty.e("2D, DOM, NinjaGirl, player, femaleNinja, RightControls, Collision")
+  Crafty.e("2D, DOM, NinjaGirl, player, femaleNinja, RightControls, Collision, ShurikenShoot")
         .attr({ x: 1000, y: 250, z: 0 })
-                .rightControls(2)
-                .NinjaGirl();
+        .rightControls(2)
+        .NinjaGirl()
+        .bind("KeyDown", function(e) {
+            //if space is pressed, fire shuriken
+          if( e.key === Crafty.keys["SHIFT"] ) {
+            shoot = true;
+              
+            Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
+            //this is important
+                .attr({x: femaleNinja.x + 10, y: femaleNinja.y + 15})
+                .NinjaStar()
+                .bind("EnterFrame", function() {
+                      if( shoot )
+                        this.x -= 10;
+                })
+                .onHit("maleNinja", function() {
+                  this.destroy();
+                })
+                .onHit("shuriken", function() {
+                  this.destroy();
+                });
+          } 
+        });
 
 	// male ninja
 	var maleNinja = 
@@ -248,30 +211,27 @@ window.onload = function() {
 		.attr({ x: 200, y: 250, z: 0 })
         .leftControls(2)
         .NinjaBoy()
-        .bind("KeyDown", function(e) {
+        .bind("KeyDown", function(f) {
             //if space is pressed, fire shuriken
-          if( e.key === Crafty.keys["SPACE"] ) {
+          if( f.key === Crafty.keys["SPACE"] ) {
             shoot = true;
               
             Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
             //this is important
-                .attr({x: maleNinja.x + 30, y: maleNinja.y + 15})
+                .attr({x: maleNinja.x + 10, y: maleNinja.y + 15})
                 .NinjaStar()
-                /*
-                .bind("KeyDown", function(e) {
-                      if( e.key === Crafty.keys['SPACE'] ) {
-                        //shoot = true;
-                        //alert("ITS TRUE");
-                      } 
-                })*/
                 .bind("EnterFrame", function() {
                       if( shoot )
                         this.x += 10;
-                }).onHit("femaleNinja", function() {
+                })
+                .onHit("femaleNinja", function() {
                   this.destroy();
+                })
+                .onHit("shuriken", function() {
+                    this.destroy();
                 });
-          }
-    });
+          } 
+        }); 
 
     
     //shuriken

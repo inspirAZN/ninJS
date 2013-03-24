@@ -86,6 +86,8 @@ window.onload = function() {
         return this;
     }
 });
+
+
      //setting up controls for right player
     Crafty.c("RightControls", {
         init: function() {
@@ -126,6 +128,10 @@ window.onload = function() {
         shuriken: [0,0,0,1],
     });
 
+    Crafty.sprite( 32, "images/wall.png", {
+        wall: [0,0,0, 14]
+    });
+
 	
     // some grass
   var grass_w = 639;
@@ -138,6 +144,7 @@ window.onload = function() {
 
     //shuriken things
     var shuriken = Crafty.e("2D, DOM, shuriken");
+
 
 
     //firing the shuriken
@@ -167,6 +174,9 @@ window.onload = function() {
     }
   }
 
+  // wall
+  //for( var wall_Y = 0; wall_Y < win_h;)
+
    
 
   /*
@@ -176,6 +186,9 @@ window.onload = function() {
    var __shuriSpd = 0;
    var male_ninja_score = 0;
    var female_ninja_score = 0;
+   var borderTop =
+      Crafty.e("2D, DOM, Collision, borderTop")
+        .attr( {x: 0, y: 5, z: 0, w: win_w, h: 1});
 
 	// female ninja
 	var femaleNinja = 
@@ -184,7 +197,7 @@ window.onload = function() {
         .rightControls(2)
         .NinjaGirl()
         .bind("KeyDown", function(e) {
-            //if space is pressed, fire shuriken
+            //if shift is pressed, fire shuriken
           if( e.key === Crafty.keys["SHIFT"] ) {
             shoot = true;
               
@@ -193,11 +206,17 @@ window.onload = function() {
                 .attr({x: femaleNinja.x + 10, y: femaleNinja.y + 15})
                 .NinjaStar()
                 .bind("EnterFrame", function() {
-                      if( shoot )
+                      if( shoot ) 
                         this.x -= 10;
+                      if(this.x<=100)
+                        this.destroy();
                 })
                 .onHit("maleNinja", function() {
-                  this.destroy();
+                    this.destroy();
+                    Crafty("RightPoints").each(function (){
+                            this.text(++this.points + " Points") });
+                    Crafty("LeftHealthBar").each(function (){
+                            this.attr(this.w -= 10)});
                 })
                 .onHit("shuriken", function() {
                   this.destroy();
@@ -207,7 +226,7 @@ window.onload = function() {
 
 	// male ninja
 	var maleNinja = 
-  Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls, Collision, ShurikenShoot")
+  Crafty.e("2D, DOM, NinjaBoy, player, maleNinja, LeftControls, borderTop, Collision, ShurikenShoot")
 		.attr({ x: 200, y: 250, z: 0 })
         .leftControls(2)
         .NinjaBoy()
@@ -223,39 +242,43 @@ window.onload = function() {
                 .bind("EnterFrame", function() {
                       if( shoot )
                         this.x += 10;
+                      if (this.x >=1100)
+                        this.destroy();
                 })
                 .onHit("femaleNinja", function() {
-                  this.destroy();
-                })
+                    this.destroy();
+                    Crafty("LeftPoints").each(function (){
+                            this.text(++this.points + " Points") });
+                    Crafty("RightHealthBar").each(function (){
+                            this.attr(this.w -= 10)});
+                    })
                 .onHit("shuriken", function() {
                     this.destroy();
-                });
+                })
           } 
         }); 
 
-    
-    //shuriken
-    /*
-    Crafty.e("2D, DOM, NinjaStar, shuriken, Collision")
-        .attr({x: maleNinja.x + 30, y: maleNinja.y})
-        //.fireControls(5)
-        .NinjaStar()
-        .bind("KeyDown", function(e) {
-              if( e.key === Crafty.keys['SPACE'] ) {
-                shoot = true;
-                //alert("ITS TRUE");
-              }
-        }).bind("EnterFrame", function() {
-              if( shoot )
-                this.x += 10;
-        }).onHit("femaleNinja", function() {
-          this.destroy();
-        }); */
+    //score boards
+    Crafty.e("LeftPoints, DOM, 2D, Text")
+        .attr({x:80, y:20, w:100, h:20, points:0})
+        .text("0 Points");
 
+    Crafty.e("RightPoints, DOM, 2D, Text")
+        .attr({x:1080, y:20, w:100, h:20, points:0})
+        .text("0 Points")
 
-  var borderTop =
-  Crafty.e("2D, DOM, Collision, borderTop")
-    .attr( {x: 0, y: 5, z: 0, w: win_w, h: 1});
+    //experimental health bars
+    Crafty.e("LeftHealthBG, DOM, 2D, Color")
+        .color('rgb(0,0,0)')
+        .attr({x: 25, y: 595, w: 510, h: 30})
+    Crafty.e("RightHealthBG, DOM, 2D, Color")
+        .color('rgb(0,0,0)')
+        .attr({x:735, y: 595, w: 510, h: 30})
 
-
+    Crafty.e("LeftHealthBar, DOM, 2D, Color")
+        .color('rgb(0,0,255)')
+        .attr({x:30, y: 600, w: 500, h: 20})
+    Crafty.e("RightHealthBar, DOM, 2D, Color")
+        .color('rgb(0,0,255)')
+        .attr({x:740, y: 600, w: 500, h: 20})
 };
